@@ -1,0 +1,19 @@
+{% extends "perma_api/base.html" %}
+
+{% block content %}
+
+<p>Plants</p>
+
+{% if Plants %}
+    <ul>
+    {% for plant in Plants %}
+        <li>
+            <a href="{% url 'perma_api:plant' plants.id %}">{{ plant }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No plants are available.</p>
+{% endif %}
+
+{% endblock content %}
