@@ -23,5 +23,5 @@ class PlantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Plants
-        # changed the field:positive_neighbours to positive_neighbours_names, otherwise ['__all__'] would do.
+        # changed the field:positive_neighbours to positive_neighbours_names, etc. otherwise ['__all__'] would do.
         fields = ['id', 'name', 'plant_month', 'harvest_month', 'date_added', 'is_deleted', 'positive_neighbours_names', 'negative_neighbours_names']
