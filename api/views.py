@@ -1,5 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 from api.serializers import PlantSerializer
 from perma_api.models import Plants
 from api.services import check_neighbours, find_optimal_garden_beds
@@ -22,7 +23,7 @@ def getRoutes(request):
 def getPlants(request):
     plants = Plants.objects.all()
     serializer = PlantSerializer(plants, many=True)
-    return Response(serializer.data)
+    return Response({'data': serializer.data}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'POST'])
