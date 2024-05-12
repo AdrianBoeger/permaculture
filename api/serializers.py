@@ -9,8 +9,10 @@ class MonthsSerializer(serializers.ModelSerializer):
 
 
 class PlantSerializer(serializers.ModelSerializer):
-    plant_month = MonthsSerializer(many=False)
-    harvest_month = MonthsSerializer(many=False)
+    # https://www.django-rest-framework.org/api-guide/relations/
+    # StringRelatedField for the written month, PrimaryKeyRelatedField for the ID
+    plant_month = serializers.StringRelatedField(many=False)
+    harvest_month = serializers.PrimaryKeyRelatedField(queryset=Months.objects.all())
     positive_neighbours_names = serializers.SerializerMethodField()
     negative_neighbours_names = serializers.SerializerMethodField()
 

@@ -10,10 +10,14 @@ from api.services import check_neighbours, find_optimal_garden_beds
 def getRoutes(request):
 
     routes = [
-        {'GET': '/api/plants'},
-        {'GET': '/api/plants/id'},
+        {'GET, POST': '/api/plants'},
+        {'GET, POST': '/api/plants/id'},
         {'GET': '/api/plants/id/good_neighbours'},
         {'GET': '/api/plants/id/bad_neighbours'},
+        {'GET': '/api/plants/good_neighbours'},
+        {'GET': '/api/plants/bad_neighbours'},
+        {'POST': '/api/plants/find_bad_neighbours'},
+        {'POST': '/api/plants/optimal_garden_beds'},
     ]
 
     return Response(routes)
@@ -21,16 +25,24 @@ def getRoutes(request):
 
 @api_view(['GET', 'POST'])
 def getPlants(request):
-    plants = Plants.objects.all()
-    serializer = PlantSerializer(plants, many=True)
-    return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+    if request.method == 'GET':
+        plants = Plants.objects.all()
+        serializer = PlantSerializer(plants, many=True)
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+    elif request.method == 'POST':
+        serializer = PlantSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'POST'])
 def getPlant(request, plants_id):
-    plant = Plants.objects.get(id=plants_id)
-    serializer = PlantSerializer(plant, many=False)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        plant = Plants.objects.get(id=plants_id)
+        serializer = PlantSerializer(plant, many=False)
+        return Response(serializer.data)
 
 
 @api_view(['GET'])
