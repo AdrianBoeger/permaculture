@@ -37,12 +37,29 @@ def getPlants(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def getPlant(request, plants_id):
+
+    try:
+        plant = Plants.objects.get(pk=plants_id)
+    except Plants.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
     if request.method == 'GET':
         plant = Plants.objects.get(id=plants_id)
         serializer = PlantSerializer(plant, many=False)
         return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = PlantSerializer(plant, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        plant.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
