@@ -9,10 +9,13 @@ class MonthsSerializer(serializers.ModelSerializer):
 
 
 class PlantSerializer(serializers.ModelSerializer):
-    # https://www.django-rest-framework.org/api-guide/relations/
-    # StringRelatedField for the written month, PrimaryKeyRelatedField for the ID
-    plant_month = serializers.StringRelatedField(many=False)
-    harvest_month = serializers.PrimaryKeyRelatedField(queryset=Months.objects.all())
+    """
+    https://www.django-rest-framework.org/api-guide/relations/
+    StringRelatedField for the written month (read_only!!), PrimaryKeyRelatedField for the ID
+    SlugRelatedField(queryset=Months.objects.all(), slug_field='month_name') seems to work for GET, POST
+    """
+    plant_month = serializers.SlugRelatedField(queryset=Months.objects.all(), slug_field='month_name')
+    harvest_month = serializers.SlugRelatedField(queryset=Months.objects.all(), slug_field='month_name')
     positive_neighbours_names = serializers.SerializerMethodField()
     negative_neighbours_names = serializers.SerializerMethodField()
 
@@ -26,4 +29,8 @@ class PlantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plants
         # changed the field:positive_neighbours to positive_neighbours_names, etc. otherwise ['__all__'] would do.
-        fields = ['id', 'name', 'plant_month', 'harvest_month', 'date_added', 'is_deleted', 'positive_neighbours_names', 'negative_neighbours_names']
+        fields = ['id', 'name', 'plant_month', 'harvest_month', 'date_added', 'is_deleted',
+                  'positive_neighbours_names', 'negative_neighbours_names']
+
+# ToDo:
+#       fuzzy finder for month and neighbours

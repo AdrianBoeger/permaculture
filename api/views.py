@@ -41,7 +41,7 @@ def getPlants(request):
 def getPlant(request, plants_id):
 
     try:
-        plant = Plants.objects.get(pk=plants_id)
+        plant = Plants.objects.get(id=plants_id)
     except Plants.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -106,3 +106,8 @@ def all_bad_neighbours(request):
     for plant in plants:
         bad_neighbours_dict[plant.name] = plant.negative_neighbours.all().values_list('name', flat=True)
     return Response(bad_neighbours_dict)
+
+
+# ToDo:
+#       add is_deleted flag in function getPlant -> elif request.method == 'DELETE':
+#
